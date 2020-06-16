@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.example.jai.login_screens.LoginActivity3">
+    tools:context=".MainActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -37,7 +37,7 @@
                 android:textSize="40dp" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tvMsg1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="¡Bienvenido amigo!"
@@ -45,7 +45,7 @@
                 android:gravity="center"/>
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/tvMsg2"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:gravity="center"
@@ -150,7 +150,7 @@
 
 
             <Button
-                android:id="@+id/email_sign_in_button3"
+                android:id="@+id/sign_in"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -170,13 +170,13 @@
                 android:layout_gravity="center">
 
                 <TextView
+                    android:id="@+id/sign_up"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Regístrate"
                     android:textColor="#ffffff"
                     android:textSize="12dp" />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
