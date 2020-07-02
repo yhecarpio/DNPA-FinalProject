@@ -60,6 +60,7 @@ public class RegisterUser extends AppCompatActivity {
             }
         });
 
+        //Checking possible interface errors before launching the register method
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,13 +80,14 @@ public class RegisterUser extends AppCompatActivity {
                 }
 
                 else {
-                    Toast.makeText(RegisterUser.this, "Debe complete los campos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterUser.this, "Debe completar los campos", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
     }
 
+    //Registering Users, if some data are incorrect, it shows the error
     private void registerUser(){
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -106,7 +108,7 @@ public class RegisterUser extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task2) {
                             if (task2.isSuccessful()){
-                                startActivity(new Intent(RegisterUser.this, MainActivity.class));
+                                startActivity(new Intent(RegisterUser.this, MapsActivity.class));
                                 try {
                                     finish();
                                 } catch (Throwable throwable) {
@@ -114,7 +116,8 @@ public class RegisterUser extends AppCompatActivity {
                                 }
                             }
                             else{
-                                Toast.makeText(RegisterUser.this, "No se pudieron crear los datos correctamente", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterUser.this, "No" +
+                                        " se pudieron crear los datos correctamente", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -127,6 +130,7 @@ public class RegisterUser extends AppCompatActivity {
         });
     }
 
+    //Verifying if the password's fields are equal
     private boolean isEqual(String psswd, String repsswd){
         return psswd.equals(repsswd);
     }

@@ -63,12 +63,13 @@ public class LoginUser extends AppCompatActivity {
 
     }
 
+    //Making a Login, if the credentials are corrected, the MapsActivity starts
     private void loginUser(){
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    startActivity(new Intent(LoginUser.this, MainActivity.class));
+                    startActivity(new Intent(LoginUser.this, MapsActivity.class));
                     finish();
                 }
                 else{
