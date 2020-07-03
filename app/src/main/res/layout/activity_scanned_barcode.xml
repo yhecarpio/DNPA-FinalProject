@@ -25,6 +25,40 @@
         android:textColor="@android:color/white"
         android:textSize="30dp" />
 
+    <TextView
+        android:id="@+id/txtBarcodeValueHorizontal"
+        android:layout_width="337dp"
+        android:layout_height="326dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginRight="11dp"
+        android:fontFamily="@font/indigo_daisy"
+        android:rotation="90"
+        android:text="Escanea un código QR autorizado"
+        android:textColor="@android:color/white"
+        android:textSize="30dp"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/txtBarcodeValueHorizontalInverted"
+        android:layout_width="337dp"
+        android:layout_height="326dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginRight="11dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/indigo_daisy"
+        android:rotation="270"
+        android:text="Escanea un código QR autorizado"
+        android:textColor="@android:color/white"
+        android:textSize="30dp"
+        android:visibility="invisible" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_return_map"
         android:layout_width="wrap_content"

@@ -6,7 +6,13 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -23,7 +29,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 
-public class ScannedBarcode extends AppCompatActivity {
+public class ScannedBarcode extends AppCompatActivity implements SensorEventListener {
+
+    private SensorManager sensorManager;
+    private final float[] accelerometerReading = new float[3];
+    private final float[] magnetometerReading = new float[3];
+
+    private final float[] rotationMatrix = new float[9];
+    private final float[] orientationAngles = new float[3];
+
+    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted;
 
     SurfaceView surfaceView;
     private BarcodeDetector barcodeDetector;
@@ -36,6 +51,12 @@ public class ScannedBarcode extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanned_barcode);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        txtBarcode = (TextView) findViewById(R.id.txtBarcodeValue);
+        txtBarcodeHorizontal = (TextView) findViewById(R.id.txtBarcodeValueHorizontal);
+        txtBarcodeHorizontalInverted = (TextView) findViewById(R.id.txtBarcodeValueHorizontalInverted);
 
         initViews();
     }
@@ -81,7 +102,6 @@ public class ScannedBarcode extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
             }
 
             @Override
@@ -123,6 +143,7 @@ public class ScannedBarcode extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         cameraSource.release();
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -130,7 +151,62 @@ public class ScannedBarcode extends AppCompatActivity {
         super.onResume();
         initialiseDetectorsAndSources();
 
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
+        Sensor magneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (magneticField != null) {
+            sensorManager.registerListener(this, magneticField,
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, accelerometerReading,
+                    0, accelerometerReading.length);
+            updateOrientationAngles();
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, magnetometerReading,
+                    0, magnetometerReading.length);
+            updateOrientationAngles();
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    public void updateOrientationAngles() {
+        // Update rotation matrix, which is needed to update orientation angles.
+        SensorManager.getRotationMatrix(rotationMatrix, null,
+                accelerometerReading, magnetometerReading);
+
+        // "mRotationMatrix" now has up-to-date information.
+
+        SensorManager.getOrientation(rotationMatrix, orientationAngles);
+
+        Log.i("ORIENTATION", "z=" + orientationAngles[0] + ", x=" + orientationAngles[1] + ", y" + orientationAngles[2]);
+
+        if (orientationAngles[1] <= 0.2 && orientationAngles[1] >= -0.2) {
+            if (orientationAngles[2] < 0) {
+                txtBarcode.setVisibility(View.INVISIBLE);
+                txtBarcodeHorizontal.setVisibility(View.VISIBLE);
+                txtBarcodeHorizontalInverted.setVisibility(View.INVISIBLE);
+            } else {
+                txtBarcode.setVisibility(View.INVISIBLE);
+                txtBarcodeHorizontal.setVisibility(View.INVISIBLE);
+                txtBarcodeHorizontalInverted.setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            txtBarcode.setVisibility(View.VISIBLE);
+            txtBarcodeHorizontal.setVisibility(View.INVISIBLE);
+            txtBarcodeHorizontalInverted.setVisibility(View.INVISIBLE);
+        }
     }
 
 }
