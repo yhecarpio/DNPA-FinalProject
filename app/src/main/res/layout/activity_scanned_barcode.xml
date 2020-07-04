@@ -63,14 +63,34 @@
         android:id="@+id/shaking_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please stop shaking the phone"
+        android:text="No mueva el celular bruscamente"
         android:textSize="80dp"
         android:textColor="@color/colorAlert"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:fontFamily="@font/indigo_daisy"
-        android:visibility="visible"/>
+        android:visibility="invisible"/>
+
+
+    <ImageView
+        android:id="@+id/imgShakingTriangle"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/ic_triangle_warning"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/imgShakingPhone"
+        android:layout_width="130dp"
+        android:layout_height="270dp"
+        android:layout_alignTop="@+id/imgShakingTriangle"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        app:srcCompat="@drawable/ic_shake_phone"
+        android:visibility="invisible"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_return_map"

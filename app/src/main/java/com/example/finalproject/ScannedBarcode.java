@@ -18,6 +18,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.IOException;
 
 public class ScannedBarcode extends AppCompatActivity implements SensorEventListener {
-
+    //Necessary parameters for motion and orientation detection
     private SensorManager sensorManager;
     private final float[] accelerometerReading = new float[3];
     private final float[] magnetometerReading = new float[3];
@@ -41,8 +42,9 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
     private float lastX, lastY, lastZ;
     private boolean firstTime = true;
     private final float THRESHOLD = 5;
-    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted, shakingMessage;;
 
+    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted;
+    ImageView shakingViewTriangle, shakingViewPhone;
     SurfaceView surfaceView;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
@@ -57,16 +59,17 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        txtBarcode = (TextView) findViewById(R.id.txtBarcodeValue);
-        txtBarcodeHorizontal = (TextView) findViewById(R.id.txtBarcodeValueHorizontal);
-        txtBarcodeHorizontalInverted = (TextView) findViewById(R.id.txtBarcodeValueHorizontalInverted);
-        shakingMessage = (TextView) findViewById(R.id.shaking_message);
-
         initViews();
     }
 
     //Initializing the components to start the activity
     private void initViews() {
+        txtBarcode = (TextView) findViewById(R.id.txtBarcodeValue);
+        txtBarcodeHorizontal = (TextView) findViewById(R.id.txtBarcodeValueHorizontal);
+        txtBarcodeHorizontalInverted = (TextView) findViewById(R.id.txtBarcodeValueHorizontalInverted);
+        shakingViewTriangle = (ImageView) findViewById(R.id.imgShakingTriangle);
+        shakingViewPhone = (ImageView) findViewById(R.id.imgShakingPhone);
+
         surfaceView = findViewById(R.id.surfaceView);
         returnMap = findViewById(R.id.btn_return_map);
         returnMap.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +150,7 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
     protected void onPause() {
         super.onPause();
         cameraSource.release();
+        // if the activity is paused, the sensor is unregistered
         sensorManager.unregisterListener(this);
     }
 
@@ -155,6 +159,7 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
         super.onResume();
         initialiseDetectorsAndSources();
 
+        // when the user initiates this activity, the sensors are registered
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (accelerometer != null) {
             sensorManager.registerListener(this, accelerometer,
@@ -169,15 +174,16 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        //calls the methods to detect the orientation of the phone and detect shaking motion
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading,
                     0, accelerometerReading.length);
-            updateOrientationAngles();
+            detectOrientation();
             detectShakingMotion();
         } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             System.arraycopy(event.values, 0, magnetometerReading,
                     0, magnetometerReading.length);
-            updateOrientationAngles();
+            detectOrientation();
         }
     }
 
@@ -185,16 +191,17 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    public void updateOrientationAngles() {
+    // Compute the three orientation angles based on the most recent readings from
+    // the device's accelerometer and magnetometer.
+    public void detectOrientation() {
         // Update rotation matrix, which is needed to update orientation angles.
         SensorManager.getRotationMatrix(rotationMatrix, null,
                 accelerometerReading, magnetometerReading);
-
         // "mRotationMatrix" now has up-to-date information.
-
         SensorManager.getOrientation(rotationMatrix, orientationAngles);
-
+        // when the orientation is horizontal, the showed text changes so the user can read it well
         if (orientationAngles[1] <= 0.2 && orientationAngles[1] >= -0.2) {
+            // verifies if the horizontal position is normal or inverted
             if (orientationAngles[2] < 0) {
                 txtBarcode.setVisibility(View.INVISIBLE);
                 txtBarcodeHorizontal.setVisibility(View.VISIBLE);
@@ -212,22 +219,30 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
         }
     }
 
+    //  Detects if the user is shaking the phone while is trying to scan a QR code
     private void detectShakingMotion() {
+        // detects current accelerometer parameters
         float currentX = accelerometerReading[0];
         float currentY = accelerometerReading[1];
         float currentZ = accelerometerReading[2];
-
-        if (!firstTime){
-            float xDifference = Math.abs(lastX- currentX);
-            float yDifference = Math.abs(lastY- currentY);
-            float zDifference = Math.abs(lastZ- currentZ);
-
+        // the first time we don't have last values
+        if (!firstTime) {
+            // calculates the difference between the current and last values to detect shaking movement
+            float xDifference = Math.abs(lastX - currentX);
+            float yDifference = Math.abs(lastY - currentY);
+            float zDifference = Math.abs(lastZ - currentZ);
+            // if there is shaking movement, the warning appears
             if (xDifference > THRESHOLD || yDifference > THRESHOLD || zDifference > THRESHOLD) {
-                shakingMessage.setVisibility(View.VISIBLE);
-            } else
-                shakingMessage.setVisibility(View.INVISIBLE);
+                shakingViewTriangle.setVisibility(View.VISIBLE);
+                shakingViewTriangle.setAlpha((float) 0.3);
+                shakingViewPhone.setVisibility(View.VISIBLE);
+                shakingViewPhone.setAlpha((float) 0.3);
+            } else{
+                shakingViewTriangle.setVisibility(View.INVISIBLE);
+                shakingViewPhone.setVisibility(View.INVISIBLE);
+            }
         }
-
+        // saves the last values to use them in the next reading
         lastX = currentX;
         lastY = currentY;
         lastZ = currentZ;
