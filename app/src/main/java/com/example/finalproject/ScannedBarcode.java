@@ -38,7 +38,10 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
     private final float[] rotationMatrix = new float[9];
     private final float[] orientationAngles = new float[3];
 
-    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted;
+    private float lastX, lastY, lastZ;
+    private boolean firstTime = true;
+    private final float THRESHOLD = 5;
+    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted, shakingMessage;;
 
     SurfaceView surfaceView;
     private BarcodeDetector barcodeDetector;
@@ -57,6 +60,7 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
         txtBarcode = (TextView) findViewById(R.id.txtBarcodeValue);
         txtBarcodeHorizontal = (TextView) findViewById(R.id.txtBarcodeValueHorizontal);
         txtBarcodeHorizontalInverted = (TextView) findViewById(R.id.txtBarcodeValueHorizontalInverted);
+        shakingMessage = (TextView) findViewById(R.id.shaking_message);
 
         initViews();
     }
@@ -169,6 +173,7 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
             System.arraycopy(event.values, 0, accelerometerReading,
                     0, accelerometerReading.length);
             updateOrientationAngles();
+            detectShakingMotion();
         } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             System.arraycopy(event.values, 0, magnetometerReading,
                     0, magnetometerReading.length);
@@ -189,8 +194,6 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
 
         SensorManager.getOrientation(rotationMatrix, orientationAngles);
 
-        Log.i("ORIENTATION", "z=" + orientationAngles[0] + ", x=" + orientationAngles[1] + ", y" + orientationAngles[2]);
-
         if (orientationAngles[1] <= 0.2 && orientationAngles[1] >= -0.2) {
             if (orientationAngles[2] < 0) {
                 txtBarcode.setVisibility(View.INVISIBLE);
@@ -207,6 +210,29 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
             txtBarcodeHorizontal.setVisibility(View.INVISIBLE);
             txtBarcodeHorizontalInverted.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void detectShakingMotion() {
+        float currentX = accelerometerReading[0];
+        float currentY = accelerometerReading[1];
+        float currentZ = accelerometerReading[2];
+
+        if (!firstTime){
+            float xDifference = Math.abs(lastX- currentX);
+            float yDifference = Math.abs(lastY- currentY);
+            float zDifference = Math.abs(lastZ- currentZ);
+
+            if (xDifference > THRESHOLD || yDifference > THRESHOLD || zDifference > THRESHOLD) {
+                shakingMessage.setVisibility(View.VISIBLE);
+            } else
+                shakingMessage.setVisibility(View.INVISIBLE);
+        }
+
+        lastX = currentX;
+        lastY = currentY;
+        lastZ = currentZ;
+
+        firstTime = false;
     }
 
 }
