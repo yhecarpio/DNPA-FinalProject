@@ -43,4 +43,6 @@
         Click notification to return to app
     </string>
     <string name="insufficient_permissions">Insufficient permissions.</string>
+
+    <string name="tomar_foto">Tomar foto</string>
 </resources>

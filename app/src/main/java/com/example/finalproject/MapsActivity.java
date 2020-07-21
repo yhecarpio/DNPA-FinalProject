@@ -45,6 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //Initializing variables
     FloatingActionButton scan_qr;
+    FloatingActionButton take_photo;
     private GoogleMap mMap;
     TouristPlaces touristPlaces;
     private GeofencingClient geofencingClient;
@@ -80,6 +81,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(new Intent(MapsActivity.this, ScannedBarcode.class));
             }
         });
+
+        take_photo = findViewById(R.id.btn_take_photo);
+        take_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MapsActivity.this, Camera.class));
+            }
+        });
     }
 
     /**
@@ -101,9 +110,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else {
             mMap.setMyLocationEnabled(true);
-            // Add a marker in Sydney and move the camera
+            // Add a marker in current location and move the camera
             fillMarkers(touristPlaces.getTouristPlaces());
-            //mMap.moveCamera(CameraUpdateFactory.newLatLng(casa));
             LatLng casa = getLocation();
             if (casa != null)
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(casa,15));
@@ -128,8 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void populateGeofenceList() {
         for (TouristPlace touristPlace: touristPlaces.getTouristPlaces()) {
             geofenceList.add(new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
+                    // Set the request ID of the geofence. This is a string to identify this geofence.
                     .setRequestId(touristPlace.getName())
 
                     // Set the circular region of this geofence.
@@ -147,7 +154,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // transition. We track entry and exit transitions in this sample.
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
-
                     // Create the geofence.
                     .build());
         }

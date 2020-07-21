@@ -36,25 +36,19 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             Log.e(TAG, errorMessage);
             return;
         }
-
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
-
         // Test that the reported transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
                 geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-
-            // Get the geofences that were triggered. A single event can trigger
-            // multiple geofences.
+            // Get the geofences that were triggered. A single event can trigger multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
             // Get the transition details as a String.
             String geofenceTransitionDetails = getGeofenceTransitionDetails(
                     geofenceTransition,
                     triggeringGeofences,
                     context
             );
-
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails, context);
             Log.i(TAG, geofenceTransitionDetails);

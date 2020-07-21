@@ -41,7 +41,7 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
     private float lastX, lastY, lastZ;
     private boolean firstTime = true;
     private final float THRESHOLD = 5;
-    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted, shakingMessage;;
+    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted, shakingMessage;
 
     SurfaceView surfaceView;
     private BarcodeDetector barcodeDetector;
@@ -57,10 +57,10 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        txtBarcode = (TextView) findViewById(R.id.txtBarcodeValue);
-        txtBarcodeHorizontal = (TextView) findViewById(R.id.txtBarcodeValueHorizontal);
-        txtBarcodeHorizontalInverted = (TextView) findViewById(R.id.txtBarcodeValueHorizontalInverted);
-        shakingMessage = (TextView) findViewById(R.id.shaking_message);
+        txtBarcode = findViewById(R.id.txtBarcodeValue);
+        txtBarcodeHorizontal = findViewById(R.id.txtBarcodeValueHorizontal);
+        txtBarcodeHorizontalInverted = findViewById(R.id.txtBarcodeValueHorizontalInverted);
+        shakingMessage = findViewById(R.id.shaking_message);
 
         initViews();
     }
@@ -79,9 +79,7 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
 
     //Setting up the QR Scanner config
     private void initialiseDetectorsAndSources() {
-
         Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
-
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
@@ -95,7 +93,8 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 try {
-                    if (ActivityCompat.checkSelfPermission(ScannedBarcode.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(ScannedBarcode.this,
+                            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         cameraSource.start(surfaceView.getHolder());
                     } else {
                         ActivityCompat.requestPermissions(ScannedBarcode.this, new
@@ -122,7 +121,8 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
-                Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped",
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -132,7 +132,8 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
 
                     if (barcodes.valueAt(0).displayValue != null) {
                         intentData = barcodes.valueAt(0).displayValue;
-                        startActivity(new Intent(ScannedBarcode.this, ScannedDetailActivity.class).putExtra("id", Integer.parseInt(intentData)));
+                        startActivity(new Intent(ScannedBarcode.this, ScannedDetailActivity.class)
+                                .putExtra("id", Integer.parseInt(intentData)));
                     } else {
                         Toast.makeText(getApplicationContext(), "No se pudo escanear correctamente", Toast.LENGTH_SHORT).show();
                     }
