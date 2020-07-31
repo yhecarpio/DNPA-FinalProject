@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.finalproject.Models;
 
 //This class models LandMark data which will be available to show through QR codes
 public class LandMark {

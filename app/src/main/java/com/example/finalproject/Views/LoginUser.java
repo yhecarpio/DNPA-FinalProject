@@ -1,6 +1,5 @@
-package com.example.finalproject;
+package com.example.finalproject.Views;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,10 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.finalproject.Controllers.LoginController;
+import com.example.finalproject.R;
 
 public class LoginUser extends AppCompatActivity {
 
@@ -24,25 +21,24 @@ public class LoginUser extends AppCompatActivity {
 
     private String email = "";
     private String password = "";
+    LoginController loginController;
 
-    FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_user);
 
-        mAuth = FirebaseAuth.getInstance();
+        loginController = new LoginController();
 
-        et_email = (EditText) findViewById(R.id.et_email);
-        et_password = (EditText) findViewById(R.id.et_password);
-        btn_login = (Button) findViewById(R.id.btn_login);
-        btn_SentToRegister = (Button) findViewById(R.id.btn_sendToRegister);
+        et_email = findViewById(R.id.et_email);
+        et_password = findViewById(R.id.et_password);
+        btn_login = findViewById(R.id.btn_login);
+        btn_SentToRegister = findViewById(R.id.btn_sendToRegister);
 
         btn_SentToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginUser.this, RegisterUser.class));
-
             }
         });
 
@@ -53,27 +49,10 @@ public class LoginUser extends AppCompatActivity {
                 password = et_password.getText().toString();
 
                 if(!email.isEmpty() && !password.isEmpty()){
-                    loginUser();
+                    loginController.loginUser(email, password, LoginUser.this);
                 }
                 else {
                     Toast.makeText(LoginUser.this, "Complete los campos", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-    }
-
-    //Making a Login, if the credentials are corrected, the MapsActivity starts
-    private void loginUser(){
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    startActivity(new Intent(LoginUser.this, MapsActivity.class));
-                    finish();
-                }
-                else{
-                    Toast.makeText(LoginUser.this, "No se pudo iniciar sesión, compruebe datos", Toast.LENGTH_SHORT).show();
                 }
             }
         });

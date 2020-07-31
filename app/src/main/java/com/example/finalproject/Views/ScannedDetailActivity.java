@@ -1,25 +1,24 @@
-package com.example.finalproject;
+package com.example.finalproject.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.finalproject.Controllers.DownloadImageTask;
+import com.example.finalproject.Controllers.TouristPlacesLandmarksController;
+import com.example.finalproject.Models.LandMark;
+import com.example.finalproject.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class ScannedDetailActivity extends AppCompatActivity {
 
-    TouristPlaces t_places;
+    TouristPlacesLandmarksController t_places;
     ArrayList<LandMark> landMarks;
     TextView place;
     TextView title;
@@ -37,7 +36,7 @@ public class ScannedDetailActivity extends AppCompatActivity {
     }
     //Initializing the components to start the activity
     private void init() {
-        t_places = new TouristPlaces();
+        t_places = new TouristPlacesLandmarksController();
         t_places.fillLandMarks();
         landMarks = t_places.getLandMarks();
         place = findViewById(R.id.tv_place);

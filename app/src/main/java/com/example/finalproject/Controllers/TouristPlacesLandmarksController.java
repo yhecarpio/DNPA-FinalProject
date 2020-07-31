@@ -1,17 +1,18 @@
-package com.example.finalproject;
+package com.example.finalproject.Controllers;
 
+import com.example.finalproject.Models.LandMark;
+import com.example.finalproject.Models.TouristPlace;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 //This class recover all data from database
-public class TouristPlaces {
+public class TouristPlacesLandmarksController {
 
     static ArrayList<TouristPlace> touristPlaces = new ArrayList<TouristPlace>();
     static ArrayList<LandMark> landMarks = new ArrayList<LandMark>();
 
-    public TouristPlaces(){
+    public TouristPlacesLandmarksController(){
         fillMarkers();
     }
 

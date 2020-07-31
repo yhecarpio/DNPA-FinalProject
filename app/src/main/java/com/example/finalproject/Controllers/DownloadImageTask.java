@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.finalproject.Controllers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

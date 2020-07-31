@@ -22,12 +22,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Camera"/>
-        <activity android:name=".ScannedDetailActivity" />
-        <activity android:name=".ScannedBarcode" />
+        <activity android:name=".Views.Camera"/>
+        <activity android:name=".Views.ScannedDetailActivity" />
+        <activity android:name=".Views.ScannedBarcode" />
 
         <receiver
-            android:name=".GeofenceBroadcastReceiver"
+            android:name=".Controllers.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
         <!--
@@ -46,11 +46,10 @@
             android:value="barcode" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".Views.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".RegisterUser" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginUser">
+        <activity android:name=".Views.RegisterUser" />
+        <activity android:name=".Views.LoginUser">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

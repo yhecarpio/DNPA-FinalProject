@@ -1,4 +1,4 @@
-package com.example.finalproject;
+package com.example.finalproject.Controllers;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,6 +15,8 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 
+import com.example.finalproject.Views.MapsActivity;
+import com.example.finalproject.R;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
@@ -24,7 +26,7 @@ import java.util.List;
 
 
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MapsActivity.class.getSimpleName();
 
     private static final String CHANNEL_ID = "channel_01";
 
