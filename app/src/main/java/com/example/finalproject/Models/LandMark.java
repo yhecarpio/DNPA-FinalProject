@@ -31,4 +31,8 @@ public class LandMark {
         this.description = description;
     }
 
+    public LandMark(){
+
+    }
+
 }

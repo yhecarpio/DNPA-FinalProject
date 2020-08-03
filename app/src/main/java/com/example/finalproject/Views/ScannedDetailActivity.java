@@ -26,6 +26,7 @@ public class ScannedDetailActivity extends AppCompatActivity {
     TextView description;
     FloatingActionButton return_map;
     FloatingActionButton return_qr_scanner;
+    FloatingActionButton take_photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,7 @@ public class ScannedDetailActivity extends AppCompatActivity {
     }
     //Initializing the components to start the activity
     private void init() {
-        t_places = new TouristPlacesLandmarksController();
-        t_places.fillLandMarks();
+        t_places = new TouristPlacesLandmarksController(false);
         landMarks = t_places.getLandMarks();
         place = findViewById(R.id.tv_place);
         title = findViewById(R.id.tv_title);
@@ -55,6 +55,13 @@ public class ScannedDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(ScannedDetailActivity.this, ScannedBarcode.class));
+            }
+        });
+        take_photo = findViewById(R.id.btn_take_photo);
+        take_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ScannedDetailActivity.this, Camera.class));
             }
         });
         int id = (int) getIntent().getSerializableExtra("id");

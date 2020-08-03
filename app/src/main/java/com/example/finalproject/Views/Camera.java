@@ -115,7 +115,7 @@ public class Camera extends AppCompatActivity {
                         byte[] data = new byte[buffer.remaining()];
                         buffer.get(data);
                         saveImage(data);
-                        startActivity(new Intent(Camera.this, MapsActivity.class));
+                        startActivity(new Intent(Camera.this, ScannedDetailActivity.class));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

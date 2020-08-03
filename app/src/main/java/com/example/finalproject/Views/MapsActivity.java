@@ -19,7 +19,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //Initializing variables
     FloatingActionButton scan_qr;
-    FloatingActionButton take_photo;
     private GoogleMap mMap;
     private MapsController mapsController;
 
@@ -50,13 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        take_photo = findViewById(R.id.btn_take_photo);
-        take_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MapsActivity.this, Camera.class));
-            }
-        });
+
     }
 
     /**

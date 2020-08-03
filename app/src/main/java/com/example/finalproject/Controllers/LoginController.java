@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.finalproject.Views.MapsActivity;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -34,6 +35,10 @@ public class LoginController {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 Log.d("adsds", "Iniciando Login");
                 if (task.isSuccessful()){
+                    String id = mAuth.getCurrentUser().getUid();
+                    LatLng position = new MapsController(activity).getLocation();
+                    mDatabase.child("Users").child(id).child("latitude").setValue(position.latitude);
+                    mDatabase.child("Users").child(id).child("longitude").setValue(position.longitude);
                     activity.getApplicationContext().startActivity(new Intent(activity.getApplicationContext(), MapsActivity.class));
                     activity.finish();
                 }
@@ -51,7 +56,10 @@ public class LoginController {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     Map<String, Object> map = new HashMap<>();
+                    LatLng position = new MapsController(activity).getLocation();
                     map.put("name", name);
+                    map.put("latitude", position.latitude);
+                    map.put("longitude", position.longitude);
                     map.put("email", email);
                     map.put("password", password);
                     String id = mAuth.getCurrentUser().getUid();

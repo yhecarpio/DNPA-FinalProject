@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.finalproject.Controllers.LoginController;
+import com.example.finalproject.Controllers.TouristPlacesLandmarksController;
 import com.example.finalproject.R;
 
 public class LoginUser extends AppCompatActivity {
@@ -29,7 +30,7 @@ public class LoginUser extends AppCompatActivity {
         setContentView(R.layout.activity_login_user);
 
         loginController = new LoginController();
-
+        TouristPlacesLandmarksController touristPlacesLandmarksController = new TouristPlacesLandmarksController(true);
         et_email = findViewById(R.id.et_email);
         et_password = findViewById(R.id.et_password);
         btn_login = findViewById(R.id.btn_login);

@@ -43,7 +43,7 @@ public class MapsController {
 
     public MapsController(Activity activity){
         this.activity = activity;
-        touristPlaces = new TouristPlacesLandmarksController();
+        touristPlaces = new TouristPlacesLandmarksController(false);
         geofenceList = new ArrayList<>();
         geofencePendingIntent = null;
         geofencingClient = LocationServices.getGeofencingClient(activity);
@@ -70,8 +70,8 @@ public class MapsController {
 
                     // Set the circular region of this geofence.
                     .setCircularRegion(
-                            touristPlace.getLocation().latitude,
-                            touristPlace.getLocation().longitude,
+                            touristPlace.getLatitude(),
+                            touristPlace.getLongitude(),
                             Constants.GEOFENCE_RADIUS_IN_METERS
                     )
 
@@ -131,7 +131,7 @@ public class MapsController {
     //Filling up the map with markers
     public void fillMarkers(GoogleMap mMap){
         for (TouristPlace touristPlace: touristPlaces.getTouristPlaces()) {
-            mMap.addMarker(new MarkerOptions().position(touristPlace.getLocation()).title(touristPlace.getName()).snippet(touristPlace.getDescription()));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(touristPlace.getLatitude(), touristPlace.getLongitude())).title(touristPlace.getName()).snippet(touristPlace.getDescription()));
         }
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
