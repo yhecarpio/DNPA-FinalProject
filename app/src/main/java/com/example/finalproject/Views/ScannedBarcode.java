@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.finalproject.Controllers.QRScannerController;
@@ -20,7 +21,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class ScannedBarcode extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
-    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted, shakingMessage;
+    TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted;
+    ImageView shakingViewTriangle, shakingViewPhone;
 
     SurfaceView surfaceView;
     FloatingActionButton returnMap;
@@ -52,11 +54,11 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
             }
         });
 
-
         txtBarcode = findViewById(R.id.txtBarcodeValue);
         txtBarcodeHorizontal = findViewById(R.id.txtBarcodeValueHorizontal);
         txtBarcodeHorizontalInverted = findViewById(R.id.txtBarcodeValueHorizontalInverted);
-        shakingMessage = findViewById(R.id.shaking_message);
+        shakingViewTriangle = findViewById(R.id.imgShakingTriangle);
+        shakingViewPhone = findViewById(R.id.imgShakingPhone);
     }
 
     @Override
@@ -141,9 +143,14 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
             float zDifference = Math.abs(orientation.getLastZ()- orientation.getmHighPass()[2]);
 
             if (xDifference > orientation.getThreshold() || yDifference > orientation.getThreshold() || zDifference > orientation.getThreshold()) {
-                shakingMessage.setVisibility(View.VISIBLE);
-            } else
-                shakingMessage.setVisibility(View.INVISIBLE);
+                shakingViewTriangle.setVisibility(View.VISIBLE);
+                shakingViewTriangle.setAlpha((float) 0.3);
+                shakingViewPhone.setVisibility(View.VISIBLE);
+                shakingViewPhone.setAlpha((float) 0.3);
+            } else{
+                shakingViewTriangle.setVisibility(View.INVISIBLE);
+                shakingViewPhone.setVisibility(View.INVISIBLE);
+            }
         }
 
         orientation.setLastX(orientation.getmHighPass()[0]);
