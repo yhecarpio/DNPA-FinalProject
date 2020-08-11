@@ -123,12 +123,12 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
         // Define the notification settings.
-        builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+        builder.setSmallIcon(R.mipmap.easy_guide)
                 // In a real app, you may want to use a library like Volley
                 // to decode the Bitmap.
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.common_google_signin_btn_icon_dark))
-                .setColor(Color.RED)
+                        R.mipmap.easy_guide))
+                .setColor(Color.rgb(255,102,0))
                 .setContentTitle(notificationDetails)
                 .setContentText(context.getString(R.string.geofence_transition_notification_text))
                 .setContentIntent(notificationPendingIntent);
