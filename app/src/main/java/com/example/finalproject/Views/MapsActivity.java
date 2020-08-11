@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import com.example.finalproject.Controllers.MapsController;
+import com.example.finalproject.Controllers.TakePhoto;
 import com.example.finalproject.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,6 +20,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //Initializing variables
     FloatingActionButton scan_qr;
+    FloatingActionButton takePhoto;
     private GoogleMap mMap;
     private MapsController mapsController;
 
@@ -48,7 +50,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(new Intent(MapsActivity.this, ScannedBarcode.class));
             }
         });
-
+        takePhoto = findViewById(R.id.btn_take_photo);
+        takePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MapsActivity.this, TakePhoto.class));
+            }
+        });
 
     }
 

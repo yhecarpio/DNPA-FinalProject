@@ -7,21 +7,24 @@
     tools:context=".Views.Camera"
     android:background="@color/cardview_dark_background">
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
+    <ImageView
+        android:id="@+id/photo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="7dp"
-        tools:layout_editor_absoluteY="48dp" />
+        android:layout_height="678dp"
+        android:src="@drawable/et_custom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/btn_custom"
         android:fontFamily="@font/roboto_regular"
-        android:text="@string/tomar_foto"
-        android:textColor="@android:color/white"/>
+        android:text="Volver a navegación"
+        android:textColor="@android:color/white" />
 
 </RelativeLayout>
