@@ -13,27 +13,20 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.finalproject.Controllers.QRScannerController;
+import com.example.finalproject.Models.Orientation;
 import com.example.finalproject.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ScannedBarcode extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
-    private final float[] accelerometerReading = new float[3];
-    private final float[] magnetometerReading = new float[3];
-
-    private final float[] rotationMatrix = new float[9];
-    private final float[] orientationAngles = new float[3];
-
-    private float lastX, lastY, lastZ;
-    private boolean firstTime = true;
-    private final float THRESHOLD = 5;
     TextView txtBarcode, txtBarcodeHorizontal, txtBarcodeHorizontalInverted, shakingMessage;
 
     SurfaceView surfaceView;
     FloatingActionButton returnMap;
     QRScannerController qrScannerController;
 
+    Orientation orientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +34,8 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
         setContentView(R.layout.activity_scanned_barcode);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-        txtBarcode = findViewById(R.id.txtBarcodeValue);
-        txtBarcodeHorizontal = findViewById(R.id.txtBarcodeValueHorizontal);
-        txtBarcodeHorizontalInverted = findViewById(R.id.txtBarcodeValueHorizontalInverted);
-        shakingMessage = findViewById(R.id.shaking_message);
+        int threshold = 5;
+        orientation = new Orientation(threshold);
 
         initViews();
     }
@@ -61,6 +51,12 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
                 startActivity(new Intent(ScannedBarcode.this, MapsActivity.class));
             }
         });
+
+
+        txtBarcode = findViewById(R.id.txtBarcodeValue);
+        txtBarcodeHorizontal = findViewById(R.id.txtBarcodeValueHorizontal);
+        txtBarcodeHorizontalInverted = findViewById(R.id.txtBarcodeValueHorizontalInverted);
+        shakingMessage = findViewById(R.id.shaking_message);
     }
 
     @Override
@@ -90,13 +86,11 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            System.arraycopy(event.values, 0, accelerometerReading,
-                    0, accelerometerReading.length);
+            orientation.updateAccelerometerReading(event.values);
             updateOrientationAngles();
             detectShakingMotion();
         } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            System.arraycopy(event.values, 0, magnetometerReading,
-                    0, magnetometerReading.length);
+            orientation.updateMagnetometerReading(event.values);
             updateOrientationAngles();
         }
     }
@@ -107,15 +101,15 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
 
     public void updateOrientationAngles() {
         // Update rotation matrix, which is needed to update orientation angles.
-        SensorManager.getRotationMatrix(rotationMatrix, null,
-                accelerometerReading, magnetometerReading);
+        SensorManager.getRotationMatrix(orientation.getRotationMatrix(), null,
+                orientation.getAccelerometerReading(), orientation.getMagnetometerReading());
 
         // "mRotationMatrix" now has up-to-date information.
+        SensorManager.getOrientation(orientation.getRotationMatrix(), orientation.getOrientationAngles());
+        System.out.println("filtered: "+orientation.getOrientationAngles()[1]);
 
-        SensorManager.getOrientation(rotationMatrix, orientationAngles);
-
-        if (orientationAngles[1] <= 0.2 && orientationAngles[1] >= -0.2) {
-            if (orientationAngles[2] < 0) {
+        if (orientation.getOrientationAngles()[1] < 0.4 && orientation.getOrientationAngles()[1] > -0.4) {
+            if (orientation.getOrientationAngles()[2] < 0) {
                 txtBarcode.setVisibility(View.INVISIBLE);
                 txtBarcodeHorizontal.setVisibility(View.VISIBLE);
                 txtBarcodeHorizontalInverted.setVisibility(View.INVISIBLE);
@@ -133,26 +127,30 @@ public class ScannedBarcode extends AppCompatActivity implements SensorEventList
     }
 
     private void detectShakingMotion() {
-        float currentX = accelerometerReading[0];
-        float currentY = accelerometerReading[1];
-        float currentZ = accelerometerReading[2];
+        float currentX = orientation.getAccelerometerReading()[0];
+        float currentY = orientation.getAccelerometerReading()[1];
+        float currentZ = orientation.getAccelerometerReading()[2];
 
-        if (!firstTime){
-            float xDifference = Math.abs(lastX- currentX);
-            float yDifference = Math.abs(lastY- currentY);
-            float zDifference = Math.abs(lastZ- currentZ);
+        orientation.getmHighPass()[0] = orientation.highPassFilter(currentX, orientation.getLastX(), orientation.getmHighPass()[0]);
+        orientation.getmHighPass()[1] = orientation.highPassFilter(currentY, orientation.getLastY(), orientation.getmHighPass()[1]);
+        orientation.getmHighPass()[2] = orientation.highPassFilter(currentZ, orientation.getLastZ(), orientation.getmHighPass()[2]);
 
-            if (xDifference > THRESHOLD || yDifference > THRESHOLD || zDifference > THRESHOLD) {
+        if (!orientation.isFirstTime()){
+            float xDifference = Math.abs(orientation.getLastX()- orientation.getmHighPass()[0]);
+            float yDifference = Math.abs(orientation.getLastY()- orientation.getmHighPass()[1]);
+            float zDifference = Math.abs(orientation.getLastZ()- orientation.getmHighPass()[2]);
+
+            if (xDifference > orientation.getThreshold() || yDifference > orientation.getThreshold() || zDifference > orientation.getThreshold()) {
                 shakingMessage.setVisibility(View.VISIBLE);
             } else
                 shakingMessage.setVisibility(View.INVISIBLE);
         }
 
-        lastX = currentX;
-        lastY = currentY;
-        lastZ = currentZ;
+        orientation.setLastX(orientation.getmHighPass()[0]);
+        orientation.setLastY(orientation.getmHighPass()[1]);
+        orientation.setLastZ(orientation.getmHighPass()[2]);
 
-        firstTime = false;
+        orientation.setFirstTime(false);
     }
 
 }
