@@ -55,17 +55,6 @@ public class Camera extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
-        verifyStoragePermissions(this);
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Foto tomada");
-                takePicture();
-            }
-        });
-        init();
     }
     private void init() {
         surfaceView = findViewById(R.id.surfaceView);

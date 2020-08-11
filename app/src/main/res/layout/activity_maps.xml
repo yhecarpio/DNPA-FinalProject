@@ -28,6 +28,15 @@
         android:clickable="true"
         android:src="@drawable/ic_qr_code_strong" />
 
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_take_photo"
+        android:layout_width="105dp"
+        android:layout_height="95dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginBottom="35dp"
+        android:backgroundTint="#FF6600"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_add_a_photo_24" />
 
 </RelativeLayout>
