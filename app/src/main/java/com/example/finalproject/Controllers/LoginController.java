@@ -37,8 +37,14 @@ public class LoginController {
                 if (task.isSuccessful()){
                     String id = mAuth.getCurrentUser().getUid();
                     LatLng position = new MapsController(activity).getLocation();
-                    mDatabase.child("Users").child(id).child("latitude").setValue(position.latitude);
-                    mDatabase.child("Users").child(id).child("longitude").setValue(position.longitude);
+                    if (position != null){
+                        mDatabase.child("Users").child(id).child("latitude").setValue(position.latitude);
+                        mDatabase.child("Users").child(id).child("longitude").setValue(position.longitude);
+                    }
+                    else{
+                        mDatabase.child("Users").child(id).child("latitude").setValue(0);
+                        mDatabase.child("Users").child(id).child("longitude").setValue(0);
+                    }
                     activity.getApplicationContext().startActivity(new Intent(activity.getApplicationContext(), MapsActivity.class));
                     activity.finish();
                 }
@@ -58,8 +64,14 @@ public class LoginController {
                     Map<String, Object> map = new HashMap<>();
                     LatLng position = new MapsController(activity).getLocation();
                     map.put("name", name);
-                    map.put("latitude", position.latitude);
-                    map.put("longitude", position.longitude);
+                    if (position != null){
+                        map.put("latitude", position.latitude);
+                        map.put("longitude", position.longitude);
+                    }
+                    else{
+                        map.put("latitude", 0);
+                        map.put("longitude", 0);
+                    }
                     map.put("email", email);
                     map.put("password", password);
                     String id = mAuth.getCurrentUser().getUid();

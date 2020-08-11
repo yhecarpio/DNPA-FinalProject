@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">VirtualGuide</string>
+    <string name="app_name">Easy Guide</string>
     <string name="title_activity_login_user">LoginUser</string>
     <!-- Strings used for fragments for navigation -->
     <!-- Login and Register -->
     <string name="login">Ingresar</string>
     <string name="password">Contraseña</string>
     <string name="e_mail">Email</string>
-    <string name="tag">Únetenos y \nconstruye tus propios marcadores!</string>
+    <string name="tag">Únetenos y \nvisita el lugar que quieras!</string>
     <string name="swipe_right_for_login">Desliza a la izquierda para Logearte</string>
     <string name="register">Registrar</string>
     <string name="re_type_password">Reescribir Contraseña</string>
